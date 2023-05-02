@@ -2,13 +2,22 @@ import { FaSolidSquareXmark } from "solid-icons/fa";
 
 import { appWindow } from "@tauri-apps/api/window";
 import { writeTextFile, BaseDirectory, readTextFile } from "@tauri-apps/api/fs";
-import { tasks, setTasks, newTask, setNewTask, calendarRes } from "./UserState";
+import {
+  tasks,
+  setTasks,
+  newTask,
+  setNewTask,
+  theme,
+  toast,
+  setToast,
+} from "./UserState";
 import { Task } from "./types";
 import ThemeButton from "./components/Theme";
 import MainLayout from "./Layout";
 import Drawer from "./components/Drawer";
 import { createEffect } from "solid-js";
 import Calendar from "./components/Timepicker";
+import Toast from "./components/Toast";
 
 function App() {
   createEffect(() => {
@@ -68,8 +77,10 @@ function App() {
   return (
     <MainLayout>
       <div class="flex">
+        {toast() && <Toast />}
         <Drawer />
-        <div class="flex flex-col w-full justify-start items-end pt-5 h-screen px-8 overflow-y-auto">
+        <ThemeButton />
+        <div class="flex flex-col w-full justify-start items-end pt-9 h-screen px-8 overflow-y-auto">
           {tasks().map((task: Task) => (
             <div class="flex justify-between w-full bg-base-300 text-xl items-center my-1 py-3 rounded-md">
               <div class="flex justify-center items-center ml-5 ">
@@ -100,21 +111,28 @@ function App() {
               />
             </div>
           ))}
-          <div>
-            <Calendar />
-          </div>
+          <div></div>
           <div class="container absolute bottom-0 mr-8 pb-8">
             <div class=" flex justify-end items-center">
               <input
-                class="input w-1/2 bg-transparent backdrop-blur shadow-2xl input-bordered mr-1"
+                class={`input w-1/3 bg-transparent backdrop-blur shadow-2xl input-bordered mr-1 ${
+                  theme() === "light" || theme() === "pastel"
+                    ? "border-gray-400"
+                    : "border-gray-400"
+                }`}
                 id="greet-input"
                 onChange={(e) => setNewTask(e.currentTarget.value)}
                 placeholder="+  Add a task"
                 value={newTask()}
               />
+              <Calendar />
               <button
                 onClick={() => addTask(newTask(), false)}
-                class="btn btn-outline backdrop-blur"
+                class={` btn btn-outline backdrop-blur ${
+                  theme() === "light" || theme() === "pastel"
+                    ? "text-gray-300 border-gray-400"
+                    : "text-gray-300 border-gray-400"
+                }`}
                 type="button"
               >
                 Add Task

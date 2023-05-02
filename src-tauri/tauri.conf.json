@@ -70,8 +70,8 @@
         "fullscreen": false,
         "resizable": true,
         "title": "Task App",
-        "width": 800,
-        "height": 600
+        "width": 900,
+        "height": 700
       }
     ]
   }

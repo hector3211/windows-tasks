@@ -8,8 +8,8 @@ import {
   time,
   started,
   setStarted,
+  setToast,
 } from "../UserState";
-import Calendar from "./Timepicker";
 
 export default function Draw() {
   createEffect(() => {
@@ -18,11 +18,12 @@ export default function Draw() {
       let secondsLeft = totalSec;
       const id = setInterval(() => {
         secondsLeft--;
-        if (secondsLeft < 0) {
+        if (secondsLeft <= 0) {
           clearInterval(id);
           setIntervalId(undefined);
           setStarted(false);
           setTime("00:00");
+          setToast(true);
           return;
         }
         setTime(
@@ -53,13 +54,11 @@ export default function Draw() {
       <div class="drawer-content"></div>
       <div class="drawer-side h-full">
         <label for="my-drawer" class="drawer-overlay"></label>
-        <ul class=" p-4 text-base-content">
+        <ul class="h-full flex flex-col justify-between p-4 text-base-content">
           <li>
             <div class="m-2 flex justify-center text-4xl">
               <div>{time()}</div>
             </div>
-          </li>
-          <li>
             <select
               oninput={(e) => setMin(Number(e.currentTarget.value))}
               class="select select-bordered bg-base-300 w-full max-w-xs my-1"
@@ -68,8 +67,6 @@ export default function Draw() {
               <option>20</option>
               <option>5</option>
             </select>
-          </li>
-          <li>
             <div class="flex justify-between items-center">
               <button
                 class="m-1 btn btn-sm btn-primary"
@@ -83,6 +80,13 @@ export default function Draw() {
               >
                 Reset
               </button>
+            </div>
+          </li>
+          <li>
+            <div class="tabs tabs-boxed">
+              <a class="tab tab-xs">Tab 1</a>
+              <a class="tab tab-xs tab-active">Tab 1</a>
+              <a class="tab tab-xs">Tab 1</a>
             </div>
           </li>
         </ul>

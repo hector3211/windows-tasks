@@ -1,20 +1,30 @@
-import { DateTimePicker } from "date-time-picker-solid";
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 import moment from "moment";
-import { createEffect } from "solid-js";
-import { calendarRes, setCalendarRes } from "../UserState";
+import { createEffect, onMount } from "solid-js";
+import { calendarRes, setCalendarRes, theme } from "../UserState";
 export default function Picker() {
-  createEffect(() => {
-    console.log(calendarRes());
+  let flatpick: flatpickr.Instance;
+  onMount(() => {
+    flatpick = flatpickr("#dateRange", {}) as flatpickr.Instance;
   });
 
+  createEffect(() => {
+    console.log(calendarRes());
+    flatpick.setDate(calendarRes());
+  });
   return (
-    <div class="w-min">
-      <DateTimePicker
-        calendarResponse={(e) => setCalendarRes(e.date)}
-        currentDate={moment().toDate()}
-        enableSelectedDate={false}
-        calendarWidth={10}
-        customizeCalendarBody={"calendarbody"}
+    <div class="">
+      <input
+        type="text"
+        placeholder="+ Due date"
+        class={`${
+          theme() === "light" || theme() === "pastel"
+            ? "text-gray-300 border-gray-400"
+            : "text-gray-300 border-gray-400"
+        } input  w-32 bg-transparent backdrop-blur shadow-2xl input-bordered mr-1 `}
+        id="dateRange"
+        onChange={(e) => setCalendarRes(e.currentTarget.value)}
       />
     </div>
   );
