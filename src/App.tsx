@@ -2,12 +2,13 @@ import { FaSolidSquareXmark } from "solid-icons/fa";
 
 import { appWindow } from "@tauri-apps/api/window";
 import { writeTextFile, BaseDirectory, readTextFile } from "@tauri-apps/api/fs";
-import { tasks, setTasks, newTask, setNewTask } from "./UserState";
+import { tasks, setTasks, newTask, setNewTask, calendarRes } from "./UserState";
 import { Task } from "./types";
 import ThemeButton from "./components/Theme";
 import MainLayout from "./Layout";
 import Drawer from "./components/Drawer";
 import { createEffect } from "solid-js";
+import Calendar from "./components/Timepicker";
 
 function App() {
   createEffect(() => {
@@ -99,6 +100,9 @@ function App() {
               />
             </div>
           ))}
+          <div>
+            <Calendar />
+          </div>
           <div class="container absolute bottom-0 mr-8 pb-8">
             <div class=" flex justify-end items-center">
               <input

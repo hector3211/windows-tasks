@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.calendarbody {
+  width: 18rem;
+  height: 10rem;
+}

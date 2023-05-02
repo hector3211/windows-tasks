@@ -15,3 +15,4 @@ export const [intervalId, setIntervalId] = createSignal<number | undefined>(
 );
 export const [started, setStarted] = createSignal(false);
 export const [path, setPath] = createSignal("");
+export const [calendarRes, setCalendarRes] = createSignal("");
