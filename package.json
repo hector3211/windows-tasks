@@ -13,7 +13,6 @@
   "dependencies": {
     "@tauri-apps/api": "^1.2.0",
     "daisyui": "^2.51.5",
-    "date-time-picker-solid": "^1.0.9",
     "flatpickr": "^4.6.13",
     "solid-icons": "^1.0.4",
     "solid-js": "^1.7.0"

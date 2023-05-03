@@ -14,4 +14,5 @@ export const [intervalId, setIntervalId] = createSignal<number | undefined>(
 export const [started, setStarted] = createSignal(false);
 export const [path, setPath] = createSignal("");
 export const [calendarRes, setCalendarRes] = createSignal("");
-export const [toast, setToast] = createSignal<true | false>(true);
+export const [showToast, setShowToast] = createSignal<true | false>(false);
+export const [toast, setToast] = createSignal<true | false>(false);

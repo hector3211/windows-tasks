@@ -9,7 +9,9 @@ import {
   started,
   setStarted,
   setToast,
+  toast,
 } from "../UserState";
+import Toast from "./Toast";
 
 export default function Draw() {
   createEffect(() => {
@@ -24,8 +26,11 @@ export default function Draw() {
           setStarted(false);
           setTime("00:00");
           setToast(true);
-          return;
+
+          const timeout = setTimeout(() => setToast(false), 3000);
+          return () => clearTimeout(timeout);
         }
+
         setTime(
           `${Math.floor(secondsLeft / 60)
             .toString()
@@ -51,6 +56,7 @@ export default function Draw() {
 
   return (
     <div class="drawer bg-base-300 w-1/3">
+      {toast() && <Toast />}
       <div class="drawer-content"></div>
       <div class="drawer-side h-full">
         <label for="my-drawer" class="drawer-overlay"></label>
@@ -66,6 +72,7 @@ export default function Draw() {
               <option>30</option>
               <option>20</option>
               <option>5</option>
+              <option>2</option>
             </select>
             <div class="flex justify-between items-center">
               <button
@@ -83,7 +90,7 @@ export default function Draw() {
             </div>
           </li>
           <li>
-            <div class="tabs tabs-boxed">
+            <div class="tabs tabs-boxed w-full">
               <a class="tab tab-xs">Tab 1</a>
               <a class="tab tab-xs tab-active">Tab 1</a>
               <a class="tab tab-xs">Tab 1</a>
