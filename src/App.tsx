@@ -2,8 +2,19 @@ import { FaSolidSquareXmark } from "solid-icons/fa";
 
 import { appWindow } from "@tauri-apps/api/window";
 import { writeTextFile, BaseDirectory, readTextFile } from "@tauri-apps/api/fs";
-import { tasks, setTasks, newTask, setNewTask, theme } from "./UserState";
-import { Task } from "./types";
+import {
+  tasks,
+  setTasks,
+  newTask,
+  setNewTask,
+  theme,
+  calendarRes,
+  setImportanceTag,
+  importanceTag,
+  selectPop,
+  setSelectPop,
+} from "./UserState";
+import { Importance, Task } from "./types";
 import ThemeButton from "./components/Theme";
 import MainLayout from "./Layout";
 import Drawer from "./components/Drawer";
@@ -37,13 +48,21 @@ function App() {
 
   preWindowClose();
 
-  async function addTask(contentOfTask: string, completedOfTask: boolean) {
+  async function addTask(
+    contentOfTask: string,
+    dateOfTask: string | undefined,
+    tagOfTask: Importance | undefined = "low",
+    completedOfTask: boolean
+  ) {
     const task: Task = {
       content: contentOfTask,
+      date: dateOfTask,
+      tag: tagOfTask,
       completed: completedOfTask,
     };
     setTasks([...tasks(), task]);
     setNewTask("");
+    setImportanceTag(undefined);
   }
 
   async function deleteTask(contentOfTask: string) {
@@ -94,6 +113,14 @@ function App() {
                   class="w-full bg-transparent focus:outline-none"
                   onChange={(e) => (task.content = e.currentTarget.value)}
                 />
+                <p class="text-sm w-5/12">{task?.date}</p>
+                {task.tag === "high" && (
+                  <span class="badge badge-primary">{task.tag}</span>
+                )}
+                {task.tag === "medium" && (
+                  <span class="badge badge-accent">{task.tag}</span>
+                )}
+                {task.tag === "low" && <span class="badge">{task.tag}</span>}
               </div>
               <FaSolidSquareXmark
                 onClick={() => deleteTask(task.content)}
@@ -101,14 +128,13 @@ function App() {
               />
             </div>
           ))}
-          <div></div>
-          <div class="container absolute bottom-0 mr-8 pb-8">
+          <div class="container absolute bottom-0  pb-8">
             <div class=" flex justify-end items-center">
               <input
                 class={`input w-1/3 bg-transparent backdrop-blur shadow-2xl input-bordered mr-1 ${
                   theme() === "light" || theme() === "pastel"
-                    ? "border-gray-400"
-                    : "border-gray-400"
+                    ? "border-white"
+                    : "border-white"
                 }`}
                 id="greet-input"
                 onChange={(e) => setNewTask(e.currentTarget.value)}
@@ -116,12 +142,52 @@ function App() {
                 value={newTask()}
               />
               <Calendar />
+              <div
+                class="relative mr-1 btn btn-outline hover:text-white text-white"
+                typeof="button"
+                onClick={() => setSelectPop((prev) => !prev)}
+              >
+                <p class="lowercase w-20">
+                  {importanceTag() ? importanceTag() : "Importance"}
+                </p>
+                <div
+                  class={`${selectPop() ? "absolute bottom-16" : "hidden"}
+                ${
+                  theme() === "light" || theme() === "pastel"
+                    ? "text-black"
+                    : "text-white"
+                }bg-transparent backdrop-blur border border-white  rounded-lg  w-36 h-24`}
+                >
+                  <ul>
+                    <li
+                      class="py-2.5 rounded-t-lg w-full hover:bg-primary lowercase"
+                      onClick={() => setImportanceTag("high")}
+                    >
+                      high
+                    </li>
+                    <li
+                      class="py-2 w-full hover:bg-accent lowercase "
+                      onClick={() => setImportanceTag("medium")}
+                    >
+                      medium
+                    </li>
+                    <li
+                      class="py-2 rounded-b-lg w-full hover:bg-gray-400 lowercase"
+                      onClick={() => setImportanceTag("low")}
+                    >
+                      low
+                    </li>
+                  </ul>
+                </div>
+              </div>
               <button
-                onClick={() => addTask(newTask(), false)}
+                onClick={() =>
+                  addTask(newTask(), calendarRes(), importanceTag(), false)
+                }
                 class={` btn btn-outline backdrop-blur ${
                   theme() === "light" || theme() === "pastel"
-                    ? "text-gray-300 border-gray-400"
-                    : "text-gray-300 border-gray-400"
+                    ? "text-white border-white"
+                    : "text-white border-white"
                 }`}
                 type="button"
               >

@@ -91,9 +91,9 @@ export default function Draw() {
           </li>
           <li>
             <div class="tabs tabs-boxed w-full">
-              <a class="tab tab-xs">Tab 1</a>
-              <a class="tab tab-xs tab-active">Tab 1</a>
-              <a class="tab tab-xs">Tab 1</a>
+              <a class="tab tab-sm tab-active">Tab 1</a>
+              <a class="tab tab-sm ">Tab 1</a>
+              <a class="tab tab-sm">Tab 1</a>
             </div>
           </li>
         </ul>

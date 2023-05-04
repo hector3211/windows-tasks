@@ -1,14 +1,7 @@
-import { createEffect } from "solid-js";
-import { setToast } from "../UserState";
-
 export default function ToastNoti() {
   return (
-    <div class="toast toast-top toast-start ml-2">
-      <div class="alert alert-info w-52 drop-shadow-2xl">
-        <div>
-          <span>Timer Stoped!</span>
-        </div>
-      </div>
+    <div class="chat chat-end absolute top-1 right-5">
+      <div class="chat-bubble chat-bubble-info">Timer Stopped!</div>
     </div>
   );
 }
