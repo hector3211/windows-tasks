@@ -1,4 +1,6 @@
 import { createEffect, onCleanup } from "solid-js";
+import { VsHome } from "solid-icons/vs";
+import { AiOutlineStar } from "solid-icons/ai";
 import {
   intervalId,
   min,
@@ -90,10 +92,27 @@ export default function Draw() {
             </div>
           </li>
           <li>
-            <div class="tabs tabs-boxed w-full">
-              <a class="tab tab-sm tab-active">Tab 1</a>
-              <a class="tab tab-sm ">Tab 1</a>
-              <a class="tab tab-sm">Tab 1</a>
+            <div class="w-full">
+              <ul class="menu bg-base-100 p-2 rounded-box text-md">
+                <li>
+                  <a>
+                    <VsHome />
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a>
+                    <AiOutlineStar />
+                    Important
+                  </a>
+                </li>
+                <li>
+                  <a>
+                    <AiOutlineStar />
+                    Something
+                  </a>
+                </li>
+              </ul>
             </div>
           </li>
         </ul>

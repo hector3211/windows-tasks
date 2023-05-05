@@ -6,4 +6,4 @@ export type Task = {
 };
 
 export type ThemeOptions = "dark" | "light" | "dracula" | "pastel";
-export type Importance = "high" | "medium" | "low";
+export type Importance = "high" | "low";

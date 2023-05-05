@@ -16,4 +16,5 @@ export const [toast, setToast] = createSignal<true | false>(false);
 export const [importanceTag, setImportanceTag] = createSignal<
   Importance | undefined
 >(undefined);
-export const [selectPop, setSelectPop] = createSignal<true | false>(false);
+export const [starClicked, setStarCliked] = createSignal<true | false>(false);
+export const [taskComplete, setTaskCompleted] = createSignal<number>(0);

@@ -11,8 +11,8 @@ import {
   calendarRes,
   setImportanceTag,
   importanceTag,
-  selectPop,
-  setSelectPop,
+  setStarCliked,
+  starClicked,
 } from "./UserState";
 import { Importance, Task } from "./types";
 import ThemeButton from "./components/Theme";
@@ -20,6 +20,7 @@ import MainLayout from "./Layout";
 import Drawer from "./components/Drawer";
 import { createEffect } from "solid-js";
 import Calendar from "./components/Timepicker";
+import { AiOutlineStar } from "solid-icons/ai";
 
 function App() {
   createEffect(() => {
@@ -63,6 +64,7 @@ function App() {
     setTasks([...tasks(), task]);
     setNewTask("");
     setImportanceTag(undefined);
+    setStarCliked(false);
   }
 
   async function deleteTask(contentOfTask: string) {
@@ -117,9 +119,6 @@ function App() {
                 {task.tag === "high" && (
                   <span class="badge badge-primary">{task.tag}</span>
                 )}
-                {task.tag === "medium" && (
-                  <span class="badge badge-accent">{task.tag}</span>
-                )}
                 {task.tag === "low" && <span class="badge">{task.tag}</span>}
               </div>
               <FaSolidSquareXmark
@@ -142,44 +141,17 @@ function App() {
                 value={newTask()}
               />
               <Calendar />
-              <div
-                class="relative mr-1 btn btn-outline hover:text-white text-white"
-                typeof="button"
-                onClick={() => setSelectPop((prev) => !prev)}
+              <button
+                class={`mr-1 btn btn-outline hover:text-white text-white ${
+                  starClicked() ? "bg-primary hover:bg-primary" : ""
+                }`}
+                onClick={() => {
+                  setImportanceTag("high");
+                  setStarCliked((prev) => !prev);
+                }}
               >
-                <p class="lowercase w-20">
-                  {importanceTag() ? importanceTag() : "Importance"}
-                </p>
-                <div
-                  class={`${selectPop() ? "absolute bottom-16" : "hidden"}
-                ${
-                  theme() === "light" || theme() === "pastel"
-                    ? "text-black"
-                    : "text-white"
-                }bg-transparent backdrop-blur border border-white  rounded-lg  w-36 h-24`}
-                >
-                  <ul>
-                    <li
-                      class="py-2.5 rounded-t-lg w-full hover:bg-primary lowercase"
-                      onClick={() => setImportanceTag("high")}
-                    >
-                      high
-                    </li>
-                    <li
-                      class="py-2 w-full hover:bg-accent lowercase "
-                      onClick={() => setImportanceTag("medium")}
-                    >
-                      medium
-                    </li>
-                    <li
-                      class="py-2 rounded-b-lg w-full hover:bg-gray-400 lowercase"
-                      onClick={() => setImportanceTag("low")}
-                    >
-                      low
-                    </li>
-                  </ul>
-                </div>
-              </div>
+                <AiOutlineStar class="text-xl" />
+              </button>
               <button
                 onClick={() =>
                   addTask(newTask(), calendarRes(), importanceTag(), false)
