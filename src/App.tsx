@@ -49,11 +49,11 @@ function App() {
 
   preWindowClose();
 
-  async function addTask(
+  function addTask(
     contentOfTask: string,
     dateOfTask: string | undefined,
-    tagOfTask: Importance | undefined = "low",
-    completedOfTask: boolean
+    completedOfTask: boolean,
+    tagOfTask: Importance | undefined = "low"
   ) {
     const task: Task = {
       content: contentOfTask,
@@ -67,18 +67,34 @@ function App() {
     setStarCliked(false);
   }
 
-  async function deleteTask(contentOfTask: string) {
+  function deleteTask(contentOfTask: string) {
     let newList: Task[] = tasks().filter(
       (task) => task.content !== contentOfTask
     );
     setTasks(newList);
   }
 
-  async function updateTask(contents: string, isComplete: boolean) {
+  function updateTask(contents: string, isComplete: boolean) {
     let updatedList: Task[] = [];
     for (const task of tasks()) {
       if (task.content === contents) {
         task.completed = isComplete;
+      }
+      updatedList.push(task);
+    }
+
+    setTasks(updatedList);
+  }
+
+  function updateTag(contents: string) {
+    let updatedList: Task[] = [];
+    for (const task of tasks()) {
+      if (task.content === contents) {
+        if (task.tag === "low") {
+          task.tag = "high";
+        } else {
+          task.tag = "low";
+        }
       }
       updatedList.push(task);
     }
@@ -100,13 +116,13 @@ function App() {
                     onclick={() => updateTask(task.content, !task.completed)}
                     type="checkbox"
                     checked
-                    class="checkbox mr-3"
+                    class="checkbox rounded-full mr-3"
                   />
                 ) : (
                   <input
                     onclick={() => updateTask(task.content, !task.completed)}
                     type="checkbox"
-                    class="checkbox mr-3"
+                    class="checkbox rounded-full mr-3"
                   />
                 )}
                 <input
@@ -117,9 +133,19 @@ function App() {
                 />
                 <p class="text-sm w-5/12">{task?.date}</p>
                 {task.tag === "high" && (
-                  <span class="badge badge-primary">{task.tag}</span>
+                  <span
+                    class="badge badge-primary hover:cursor-pointer hover:scale-110"
+                    onClick={() => updateTag(task.content)}
+                  >
+                    {task.tag}
+                  </span>
                 )}
-                {task.tag === "low" && <span class="badge">{task.tag}</span>}
+                {task.tag !== "high" && (
+                  <AiOutlineStar
+                    class="ml-3 hover:cursor-pointer hover:scale-110"
+                    onClick={() => updateTag(task.content)}
+                  />
+                )}
               </div>
               <FaSolidSquareXmark
                 onClick={() => deleteTask(task.content)}
@@ -153,9 +179,7 @@ function App() {
                 <AiOutlineStar class="text-xl" />
               </button>
               <button
-                onClick={() =>
-                  addTask(newTask(), calendarRes(), importanceTag(), false)
-                }
+                onClick={() => addTask(newTask(), calendarRes(), false)}
                 class={` btn btn-outline backdrop-blur ${
                   theme() === "light" || theme() === "pastel"
                     ? "text-white border-white"

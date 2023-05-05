@@ -1,6 +1,7 @@
 import { createEffect, onCleanup } from "solid-js";
 import { VsHome } from "solid-icons/vs";
 import { AiOutlineStar } from "solid-icons/ai";
+import { FaSolidCheck } from "solid-icons/fa";
 import {
   intervalId,
   min,
@@ -64,28 +65,28 @@ export default function Draw() {
         <label for="my-drawer" class="drawer-overlay"></label>
         <ul class="h-full flex flex-col justify-between p-4 text-base-content">
           <li>
-            <div class="m-2 flex justify-center text-4xl">
+            <div class="m-2 flex justify-center text-6xl">
               <div>{time()}</div>
             </div>
             <select
               oninput={(e) => setMin(Number(e.currentTarget.value))}
-              class="select select-bordered bg-base-300 w-full max-w-xs my-1"
+              class="select select-bordered bg-base-300 w-full max-w-xs my-1 mb-2"
             >
               <option>30</option>
               <option>20</option>
               <option>5</option>
-              <option>2</option>
+              <option>1</option>
             </select>
-            <div class="flex justify-between items-center">
+            <div class="flex flex-col justify-between items-center">
               <button
-                class="m-1 btn btn-sm btn-primary"
+                class="m-1 btn btn-sm btn-primary w-full"
                 onClick={() => setStarted(true)}
               >
                 Start
               </button>
               <button
                 onClick={() => stopTimer()}
-                class="m-1 btn btn-sm btn-secondary"
+                class="m-1 btn btn-sm btn-secondary w-full"
               >
                 Reset
               </button>
@@ -108,8 +109,8 @@ export default function Draw() {
                 </li>
                 <li>
                   <a>
-                    <AiOutlineStar />
-                    Something
+                    <FaSolidCheck />
+                    Mark All Done
                   </a>
                 </li>
               </ul>
