@@ -18,3 +18,4 @@ export const [importanceTag, setImportanceTag] = createSignal<
 >(undefined);
 export const [starClicked, setStarCliked] = createSignal<true | false>(false);
 export const [taskComplete, setTaskCompleted] = createSignal<number>(0);
+export const [pastDue, setPastDue] = createSignal<true | false>(false);

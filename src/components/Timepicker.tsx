@@ -1,20 +1,23 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
-import { createEffect, onMount } from "solid-js";
+import { onMount } from "solid-js";
 import { calendarRes, setCalendarRes, theme } from "../UserState";
 export default function Picker() {
   let flatpick: flatpickr.Instance;
   onMount(() => {
-    flatpick = flatpickr("#dateRange", {}) as flatpickr.Instance;
+    flatpick = flatpickr("#dateRange", {
+      enableTime: true,
+      minDate: "today",
+      dateFormat: "Y-m-d h:i",
+      time_24hr: false,
+    }) as flatpickr.Instance;
   });
 
-  createEffect(() => {
-    console.log(calendarRes());
-  });
   return (
-    <div class="">
+    <div>
       <input
         type="text"
+        value={calendarRes()}
         placeholder="+ Due date"
         class={`${
           theme() === "light" || theme() === "pastel"

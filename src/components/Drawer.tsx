@@ -1,7 +1,6 @@
 import { createEffect, onCleanup } from "solid-js";
-import { VsHome } from "solid-icons/vs";
-import { AiOutlineStar } from "solid-icons/ai";
-import { FaSolidCheck } from "solid-icons/fa";
+import { FaSolidCheck, FaSolidSquareXmark } from "solid-icons/fa";
+import { IoPersonSharp } from "solid-icons/io";
 import {
   intervalId,
   min,
@@ -13,8 +12,11 @@ import {
   setStarted,
   setToast,
   toast,
+  tasks,
+  setTasks,
 } from "../UserState";
 import Toast from "./Toast";
+import { Task } from "../types";
 
 export default function Draw() {
   createEffect(() => {
@@ -57,6 +59,22 @@ export default function Draw() {
 
   onCleanup(() => stopTimer());
 
+  function markAllDone() {
+    let updatedList: Task[] = [];
+    for (const task of tasks()) {
+      if (!task.completed) {
+        task.completed = true;
+      }
+      updatedList.push(task);
+    }
+    setTasks(updatedList);
+  }
+
+  function deleteAll() {
+    let emptyTaskList: Task[] = [];
+    setTasks(emptyTaskList);
+  }
+
   return (
     <div class="drawer bg-base-300 w-1/3">
       {toast() && <Toast />}
@@ -70,7 +88,7 @@ export default function Draw() {
             </div>
             <select
               oninput={(e) => setMin(Number(e.currentTarget.value))}
-              class="select select-bordered bg-base-300 w-full max-w-xs my-1 mb-2"
+              class="select select-bordered bg-base-300 w-full my-1 mb-2"
             >
               <option>30</option>
               <option>20</option>
@@ -97,20 +115,20 @@ export default function Draw() {
               <ul class="menu bg-base-100 p-2 rounded-box text-md">
                 <li>
                   <a>
-                    <VsHome />
-                    Home
+                    <IoPersonSharp />
+                    Login
                   </a>
                 </li>
                 <li>
-                  <a>
-                    <AiOutlineStar />
-                    Important
-                  </a>
-                </li>
-                <li>
-                  <a>
+                  <a onClick={() => markAllDone()}>
                     <FaSolidCheck />
                     Mark All Done
+                  </a>
+                </li>
+                <li>
+                  <a onClick={() => deleteAll()}>
+                    <FaSolidSquareXmark />
+                    Delete All
                   </a>
                 </li>
               </ul>

@@ -10,17 +10,17 @@ import {
   theme,
   calendarRes,
   setImportanceTag,
-  importanceTag,
   setStarCliked,
-  starClicked,
+  setCalendarRes,
 } from "./UserState";
 import { Importance, Task } from "./types";
 import ThemeButton from "./components/Theme";
 import MainLayout from "./Layout";
 import Drawer from "./components/Drawer";
-import { createEffect } from "solid-js";
+import { createEffect, Index as For, Show } from "solid-js";
 import Calendar from "./components/Timepicker";
 import { AiOutlineStar } from "solid-icons/ai";
+import TaskTimer from "./components/TaskTimers";
 
 function App() {
   createEffect(() => {
@@ -66,7 +66,6 @@ function App() {
     setImportanceTag(undefined);
     setStarCliked(false);
   }
-
   function deleteTask(contentOfTask: string) {
     let newList: Task[] = tasks().filter(
       (task) => task.content !== contentOfTask
@@ -107,10 +106,10 @@ function App() {
       <div class="flex">
         <Drawer />
         <ThemeButton />
-        <div class="flex flex-col w-full justify-start items-end pt-9 h-screen px-8 overflow-y-auto">
+        <div class="flex flex-col w-full justify-start items-end pt-10 h-screen px-8 overflow-y-auto">
           {tasks().map((task: Task) => (
             <div class="flex justify-between w-full bg-base-300 text-xl items-center my-1 py-3 rounded-md">
-              <div class="flex justify-center items-center ml-5 ">
+              <div class="flex justify-center items-center ">
                 {task.completed ? (
                   <input
                     onclick={() => updateTask(task.content, !task.completed)}
@@ -128,10 +127,10 @@ function App() {
                 <input
                   type="text"
                   value={task.content}
-                  class="w-full bg-transparent focus:outline-none"
+                  class="w-1/3 bg-transparent focus:outline-none"
                   onChange={(e) => (task.content = e.currentTarget.value)}
                 />
-                <p class="text-sm w-5/12">{task?.date}</p>
+                <p class="text-sm max-w-fit">{task?.date}</p>
                 {task.tag === "high" && (
                   <span
                     class="badge badge-primary hover:cursor-pointer hover:scale-110"
@@ -147,13 +146,14 @@ function App() {
                   />
                 )}
               </div>
+              {task.date && <TaskTimer setDate={task.date} />}
               <FaSolidSquareXmark
                 onClick={() => deleteTask(task.content)}
                 class="mr-5 hover:cursor-pointer hover:scale-110"
               />
             </div>
           ))}
-          <div class="container absolute bottom-0  pb-8">
+          <div class="container absolute bottom-0 right-24 pb-8">
             <div class=" flex justify-end items-center">
               <input
                 class={`input w-1/3 bg-transparent backdrop-blur shadow-2xl input-bordered mr-1 ${
@@ -167,17 +167,6 @@ function App() {
                 value={newTask()}
               />
               <Calendar />
-              <button
-                class={`mr-1 btn btn-outline hover:text-white text-white ${
-                  starClicked() ? "bg-primary hover:bg-primary" : ""
-                }`}
-                onClick={() => {
-                  setImportanceTag("high");
-                  setStarCliked((prev) => !prev);
-                }}
-              >
-                <AiOutlineStar class="text-xl" />
-              </button>
               <button
                 onClick={() => addTask(newTask(), calendarRes(), false)}
                 class={` btn btn-outline backdrop-blur ${
