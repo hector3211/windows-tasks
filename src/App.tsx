@@ -12,6 +12,8 @@ import {
   setImportanceTag,
   setStarCliked,
   setCalendarRes,
+  setCompletedTasks,
+  completedTasks,
 } from "./UserState";
 import { Importance, Task } from "./types";
 import ThemeButton from "./components/Theme";
@@ -21,6 +23,7 @@ import { createEffect, Index as For, Show } from "solid-js";
 import Calendar from "./components/Timepicker";
 import { AiOutlineStar } from "solid-icons/ai";
 import TaskTimer from "./components/TaskTimers";
+import CompTaskList from "./components/CompletedTaskList";
 
 function App() {
   createEffect(() => {
@@ -74,15 +77,14 @@ function App() {
   }
 
   function updateTask(contents: string, isComplete: boolean) {
-    let updatedList: Task[] = [];
+    let updateList = [];
     for (const task of tasks()) {
       if (task.content === contents) {
         task.completed = isComplete;
       }
-      updatedList.push(task);
+      updateList.push(task);
     }
-
-    setTasks(updatedList);
+    setCompletedTasks(updateList);
   }
 
   function updateTag(contents: string) {
@@ -106,31 +108,27 @@ function App() {
       <div class="flex">
         <Drawer />
         <ThemeButton />
-        <div class="flex flex-col w-full justify-start items-end pt-10 h-screen px-8 overflow-y-auto">
+        <div class="flex flex-col w-full justify-start items-start pt-10 h-screen px-8 overflow-y-auto">
           {tasks().map((task: Task) => (
-            <div class="flex justify-between w-full bg-base-300 text-xl items-center my-1 py-3 rounded-md">
-              <div class="flex justify-center items-center ">
-                {task.completed ? (
-                  <input
-                    onclick={() => updateTask(task.content, !task.completed)}
-                    type="checkbox"
-                    checked
-                    class="checkbox rounded-full mr-3"
-                  />
-                ) : (
-                  <input
-                    onclick={() => updateTask(task.content, !task.completed)}
-                    type="checkbox"
-                    class="checkbox rounded-full mr-3"
-                  />
-                )}
+            <div class="flex justify-between w-full bg-base-300 text-lg items-center my-2 py-3 px-2 rounded-md">
+              <div class="flex items-center">
+                <input
+                  onclick={() => updateTask(task.content, !task.completed)}
+                  type="checkbox"
+                  class="checkbox rounded-full mr-3"
+                />
                 <input
                   type="text"
                   value={task.content}
-                  class="w-1/3 bg-transparent focus:outline-none"
+                  class="w-60 text-xl overflow-auto bg-transparent focus:outline-none"
                   onChange={(e) => (task.content = e.currentTarget.value)}
                 />
-                <p class="text-sm max-w-fit">{task?.date}</p>
+                <div class="tooltip tooltip-top" data-tip={task?.date}>
+                  <button class="btn btn-sm lowercase">Due Date</button>
+                </div>
+              </div>
+              {task.date && <TaskTimer setDate={task.date} />}
+              <div class="">
                 {task.tag === "high" && (
                   <span
                     class="badge badge-primary hover:cursor-pointer hover:scale-110"
@@ -141,18 +139,14 @@ function App() {
                 )}
                 {task.tag !== "high" && (
                   <AiOutlineStar
-                    class="ml-3 hover:cursor-pointer hover:scale-110"
+                    class="ml-3 text-xl hover:cursor-pointer hover:scale-110"
                     onClick={() => updateTag(task.content)}
                   />
                 )}
               </div>
-              {task.date && <TaskTimer setDate={task.date} />}
-              <FaSolidSquareXmark
-                onClick={() => deleteTask(task.content)}
-                class="mr-5 hover:cursor-pointer hover:scale-110"
-              />
             </div>
           ))}
+          <CompTaskList />
           <div class="container absolute bottom-0 right-24 pb-8">
             <div class=" flex justify-end items-center">
               <input

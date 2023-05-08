@@ -2,6 +2,7 @@ import { createSignal } from "solid-js";
 import { Importance, Task, ThemeOptions } from "./types";
 
 export const [tasks, setTasks] = createSignal<Task[]>([]);
+export const [completedTasks, setCompletedTasks] = createSignal<Task[]>([]);
 export const [newTask, setNewTask] = createSignal("");
 export const [selectedTask, setSelectedTask] = createSignal("");
 export const [theme, setTheme] = createSignal<ThemeOptions>("dark");

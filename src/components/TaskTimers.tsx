@@ -1,4 +1,4 @@
-import { createSignal, onCleanup, Show } from "solid-js";
+import { createSignal, onCleanup } from "solid-js";
 import moment from "moment";
 
 type TaskTimerProps = {
@@ -7,19 +7,37 @@ type TaskTimerProps = {
 
 export default function TaskTimer({ setDate }: TaskTimerProps) {
   const [remaingTime, setRemainingTime] = createSignal<string>("");
+  const fomater = "YYYY-MM-DD hh:mm:ss A";
+  const userNotFomat = moment(setDate);
+  const curr = moment().format("ddd MMM DD YYYY HH:mm:ss");
+  const diffInMs = moment(userNotFomat).diff(curr);
+  // const diffDuration = moment.duration(diffInMs);
+  console.log(`USERDATE NOT FORMAT---- ${userNotFomat}`);
+  console.log(`COMPUTERDATE ---- ${curr}`);
+  console.log(`DIFF ---- ${diffInMs}`);
+  if (userNotFomat.isBefore(curr)) {
+    console.log("YESSS");
+  }
   function getRemainingTime() {
-    const user = moment(setDate, "YYYY-MM-DD hh:mm:ss ");
+    const user = moment(setDate).format("YYYY-MM-DD hh:mm:ss ");
     const curr = moment().format("YYYY-MM-DD hh:mm:ss ");
+    // fomat dates to be able to compare
+    const userNotFomat = moment(setDate);
+    const currFomat = moment().format("ddd MMM DD YYYY HH:mm:ss");
+
     const diffInMs = moment(user).diff(curr);
     const diffDuration = moment.duration(diffInMs);
 
     const days = diffDuration.days();
     const hours = diffDuration.hours();
     const minutes = diffDuration.minutes();
-
-    return `${days > 0 ? `${days} days` : ""} ${
-      hours > 0 ? `${hours} hours` : ""
-    } ${minutes > 0 ? `${minutes} minutes` : ""}`;
+    if (userNotFomat.isBefore(currFomat)) {
+      return "Past Due";
+    } else {
+      return `${days > 0 ? `${days} days` : ""} ${
+        hours > 0 ? `${hours} hours` : ""
+      } ${minutes > 0 ? `${minutes} minutes` : ""}`;
+    }
   }
 
   const interval = setInterval(() => {
@@ -32,7 +50,7 @@ export default function TaskTimer({ setDate }: TaskTimerProps) {
 
   return (
     <div>
-      <p class="text-sm text-red-500 w-full">{remaingTime()}</p>
+      <p class="text-sm ">{remaingTime()}</p>
     </div>
   );
 }
