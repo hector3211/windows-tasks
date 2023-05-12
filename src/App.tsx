@@ -1,4 +1,4 @@
-import { FaSolidSquareXmark } from "solid-icons/fa";
+import { FaRegularStar, FaSolidSquareXmark, FaSolidStar } from "solid-icons/fa";
 
 import { appWindow } from "@tauri-apps/api/window";
 import { writeTextFile, BaseDirectory, readTextFile } from "@tauri-apps/api/fs";
@@ -11,29 +11,24 @@ import {
   calendarRes,
   setImportanceTag,
   setStarCliked,
-  setCalendarRes,
-  setCompletedTasks,
-  completedTasks,
 } from "./UserState";
 import { Importance, Task } from "./types";
 import ThemeButton from "./components/Theme";
 import MainLayout from "./Layout";
 import Drawer from "./components/Drawer";
-import { createEffect, Index as For, Show } from "solid-js";
+import { For, onMount, Show } from "solid-js";
 import Calendar from "./components/Timepicker";
-import { AiOutlineStar } from "solid-icons/ai";
 import TaskTimer from "./components/TaskTimers";
-import CompTaskList from "./components/CompletedTaskList";
 
 function App() {
-  createEffect(() => {
+  onMount(() => {
     async function readTasks() {
       try {
         const fileContens = await readTextFile("task.json", {
           dir: BaseDirectory.AppLocalData,
         });
         const parsedTasks: Task[] = JSON.parse(fileContens);
-        setTasks([...tasks(), ...parsedTasks]);
+        setTasks(parsedTasks);
       } catch (error) {
         console.log(error);
       }
@@ -43,7 +38,8 @@ function App() {
   });
   async function preWindowClose() {
     await appWindow.onCloseRequested(async () => {
-      const parsed = JSON.stringify(tasks());
+      const updatedList = tasks().filter((task) => task.completed !== true);
+      const parsed = JSON.stringify(updatedList);
       await writeTextFile("task.json", parsed, {
         dir: BaseDirectory.AppLocalData,
       });
@@ -69,38 +65,37 @@ function App() {
     setImportanceTag(undefined);
     setStarCliked(false);
   }
+
   function deleteTask(contentOfTask: string) {
-    let newList: Task[] = tasks().filter(
-      (task) => task.content !== contentOfTask
-    );
-    setTasks(newList);
+    const newTasks = tasks().filter((task) => task.content !== contentOfTask);
+    setTasks(newTasks);
   }
 
   function updateTask(contents: string, isComplete: boolean) {
-    let updateList = [];
-    for (const task of tasks()) {
-      if (task.content === contents) {
-        task.completed = isComplete;
-      }
-      updateList.push(task);
-    }
-    setCompletedTasks(updateList);
+    setTasks(
+      tasks().map((task) => {
+        if (task.content === contents) {
+          task.completed = isComplete;
+        }
+        return task;
+      })
+    );
   }
 
   function updateTag(contents: string) {
-    let updatedList: Task[] = [];
-    for (const task of tasks()) {
-      if (task.content === contents) {
-        if (task.tag === "low") {
-          task.tag = "high";
-        } else {
-          task.tag = "low";
+    console.log("update tag button clicked!");
+    setTasks(
+      tasks().map((task) => {
+        if (task.content === contents) {
+          if (task.tag === "high") {
+            task.tag = "low";
+          } else {
+            task.tag = "high";
+          }
         }
-      }
-      updatedList.push(task);
-    }
-
-    setTasks(updatedList);
+        return { ...task };
+      })
+    );
   }
 
   return (
@@ -108,52 +103,81 @@ function App() {
       <div class="flex">
         <Drawer />
         <ThemeButton />
-        <div class="flex flex-col w-full justify-start items-start pt-10 h-screen px-8 overflow-y-auto">
-          {tasks().map((task: Task) => (
-            <div class="flex justify-between w-full bg-base-300 text-lg items-center my-2 py-3 px-2 rounded-md">
-              <div class="flex items-center">
-                <input
-                  onclick={() => updateTask(task.content, !task.completed)}
-                  type="checkbox"
-                  class="checkbox rounded-full mr-3"
-                />
-                <input
-                  type="text"
-                  value={task.content}
-                  class="w-60 text-xl overflow-auto bg-transparent focus:outline-none"
-                  onChange={(e) => (task.content = e.currentTarget.value)}
-                />
-                <div class="tooltip tooltip-top" data-tip={task?.date}>
-                  <button class="btn btn-sm lowercase">Due Date</button>
+        <div class=" flex flex-col w-full justify-start items-start pt-10 h-screen px-8 overflow-y-auto">
+          <For each={tasks()}>
+            {(task) => (
+              <div class=" flex justify-between w-full min-h-16 max-h-16 bg-base-300 text-lg items-center my-2 py-3 px-2 rounded-lg">
+                <div class="flex items-center w-1/2">
+                  <Show
+                    when={task.completed}
+                    fallback={
+                      <input
+                        onClick={() =>
+                          updateTask(task.content, !task.completed)
+                        }
+                        type="checkbox"
+                        class="checkbox rounded-full mr-3"
+                      />
+                    }
+                  >
+                    <input
+                      onClick={() => updateTask(task.content, !task.completed)}
+                      type="checkbox"
+                      checked
+                      class="checkbox rounded-full mr-3"
+                    />
+                  </Show>
+                  <input
+                    type="text "
+                    value={task.content}
+                    class="flex flex-wrap  bg-transparent focus:outline-none"
+                    onChange={(e) => (task.content = e.currentTarget.value)}
+                  />
                 </div>
-              </div>
-              {task.date && <TaskTimer setDate={task.date} />}
-              <div class="">
-                {task.tag === "high" && (
-                  <span
-                    class="badge badge-primary hover:cursor-pointer hover:scale-110"
-                    onClick={() => updateTag(task.content)}
+                <Show when={task.date}>
+                  <div class="flex flex-col items-center text-sm p-2">
+                    <div class="grid  card bg-base-300 rounded-box place-items-center">
+                      <div class="flex">
+                        <p>{task.date}</p>
+                      </div>
+                    </div>
+                    <div class="divider w-full my-0.5">Time Remaining</div>
+                    <div class="grid card bg-base-300 rounded-box place-items-center">
+                      <TaskTimer setDate={task.date} />
+                    </div>
+                  </div>
+                </Show>
+                <Show
+                  when={task.tag === "high"}
+                  fallback={
+                    <FaRegularStar
+                      class="hover:scale-110 hover:cursor-pointer"
+                      onClick={[updateTag, task.content]}
+                    />
+                  }
+                >
+                  <div
+                    class="badge badge-primary hover:scale-110 hover:cursor-pointer"
+                    typeof="button"
+                    onClick={[updateTag, task.content]}
                   >
                     {task.tag}
-                  </span>
-                )}
-                {task.tag !== "high" && (
-                  <AiOutlineStar
-                    class="ml-3 text-xl hover:cursor-pointer hover:scale-110"
-                    onClick={() => updateTag(task.content)}
-                  />
-                )}
+                  </div>
+                </Show>
+                <FaSolidSquareXmark
+                  onClick={[deleteTask, task.content]}
+                  class="mr-5 hover:cursor-pointer hover:scale-110"
+                />
               </div>
-            </div>
-          ))}
-          <CompTaskList />
-          <div class="container absolute bottom-0 right-24 pb-8">
-            <div class=" flex justify-end items-center">
+            )}
+          </For>
+          <div class="container absolute bottom-0 right-0 pb-8">
+            <div class=" flex justify-center items-center">
               <input
-                class={`input w-1/3 bg-transparent backdrop-blur shadow-2xl input-bordered mr-1 ${
+                class={`input w-1/2 bg-transparent backdrop-blur shadow-2xl input-bordered mr-1 ${
                   theme() === "light" || theme() === "pastel"
-                    ? "border-white"
-                    : "border-white"
+                    ? "border-accent"
+                    : "border-accent"
                 }`}
                 id="greet-input"
                 onChange={(e) => setNewTask(e.currentTarget.value)}
@@ -163,10 +187,10 @@ function App() {
               <Calendar />
               <button
                 onClick={() => addTask(newTask(), calendarRes(), false)}
-                class={` btn btn-outline backdrop-blur ${
+                class={` btn btn-outline backdrop-blur bg-transparent lowercase ${
                   theme() === "light" || theme() === "pastel"
-                    ? "text-white border-white"
-                    : "text-white border-white"
+                    ? "text-gray-200 border-accent"
+                    : "text-gray-200 border-accent"
                 }`}
                 type="button"
               >

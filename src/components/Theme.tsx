@@ -4,9 +4,9 @@ import { BsThreeDots } from "solid-icons/bs";
 export default function ThemeButton() {
   return (
     <div
-      class={`dropdown dropdown-bottom dropdown-end fixed right-5 top-3 ${
+      class={`dropdown dropdown-bottom dropdown-start fixed left-5 top-3 ${
         theme() === "light" || theme() === "pastel"
-          ? "text-gray-300"
+          ? "text-black"
           : "text-gray-300"
       }`}
     >
@@ -17,7 +17,7 @@ export default function ThemeButton() {
       </label>
       <ul
         tabIndex={0}
-        class={`dropdown-content menu p-2 shadow-2xl bg-base-300 rounded-box w-52 ${
+        class={`dropdown-content menu p-2 shadow-2xl bg-base-300 rounded-box w-52 z-50 ${
           theme() === "light" || theme() === "pastel"
             ? "text-black"
             : "text-white"

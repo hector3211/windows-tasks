@@ -13,7 +13,7 @@ edition = "2021"
 tauri-build = { version = "1.2", features = [] }
 
 [dependencies]
-tauri = { version = "1.2", features = ["dialog-all", "fs-copy-file", "fs-exists", "fs-read-dir", "fs-read-file", "fs-remove-file", "fs-rename-file", "fs-write-file", "path-all", "shell-open", "window-all"] }
+tauri = { version = "1.2", features = ["dialog-all", "fs-copy-file", "fs-exists", "fs-read-dir", "fs-read-file", "fs-remove-file", "fs-rename-file", "fs-write-file", "notification-all", "path-all", "shell-open", "window-all"] }
 anyhow = "1.0.70"
 
 [features]

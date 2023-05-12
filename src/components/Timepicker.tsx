@@ -8,7 +8,7 @@ export default function Picker() {
     flatpick = flatpickr("#dateRange", {
       enableTime: true,
       minDate: "today",
-      dateFormat: "Y-m-d h:i",
+      dateFormat: "d-m-y h:i K",
       time_24hr: false,
     }) as flatpickr.Instance;
   });
@@ -21,8 +21,8 @@ export default function Picker() {
         placeholder="+ Due date"
         class={`${
           theme() === "light" || theme() === "pastel"
-            ? "text-white border-white"
-            : "text-white border-white"
+            ? "text-gray-200 border-accent"
+            : "text-gray-200 border-accent"
         } input  w-32 bg-transparent backdrop-blur shadow-2xl input-bordered mr-1 `}
         id="dateRange"
         onChange={(e) => setCalendarRes(e.currentTarget.value)}

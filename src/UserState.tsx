@@ -2,7 +2,6 @@ import { createSignal } from "solid-js";
 import { Importance, Task, ThemeOptions } from "./types";
 
 export const [tasks, setTasks] = createSignal<Task[]>([]);
-export const [completedTasks, setCompletedTasks] = createSignal<Task[]>([]);
 export const [newTask, setNewTask] = createSignal("");
 export const [selectedTask, setSelectedTask] = createSignal("");
 export const [theme, setTheme] = createSignal<ThemeOptions>("dark");
@@ -18,5 +17,6 @@ export const [importanceTag, setImportanceTag] = createSignal<
   Importance | undefined
 >(undefined);
 export const [starClicked, setStarCliked] = createSignal<true | false>(false);
-export const [taskComplete, setTaskCompleted] = createSignal<number>(0);
-export const [pastDue, setPastDue] = createSignal<true | false>(false);
+export const [tasksCompleted, setTasksCompleted] = createSignal<
+  number | undefined
+>(undefined);
